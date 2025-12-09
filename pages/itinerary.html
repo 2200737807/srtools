@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行程单生成器</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/itinerary.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>用车行程单生成器</h1>
+            <p class="subtitle">快速创建专业的用车行程单</p>
+            <a href="../index.html" class="back-link">← 返回首页</a>
+        </header>
+
+        <main class="itinerary-main">
+            <!-- 基本信息配置区 -->
+            <section class="config-section">
+                <h2>用车信息</h2>
+                
+                <div class="form-group">
+                    <label for="car-type">用车属性 <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="car-type" value="包车" checked>
+                            <span>包车</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="car-type" value="接机">
+                            <span>接机</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="car-type" value="送机">
+                            <span>送机</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="car-type" value="点对点">
+                            <span>点对点</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="car-type" value="行李车">
+                            <span>行李车</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="travel-date">出行日期 <span class="required">*</span></label>
+                    <input type="date" id="travel-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="car-time">用车时间 <span class="optional">（选填，接送机、点对点填写）</span></label>
+                    <input type="time" id="car-time">
+                </div>
+
+                <div class="form-group">
+                    <label for="luggage-count">行李数量 <span class="optional">（选填）</span></label>
+                    <input type="number" id="luggage-count" placeholder="请输入行李件数" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="start-location">出行酒店或机场 <span class="required">*</span></label>
+                    <input type="text" id="start-location" placeholder="请输入出发地点">
+                </div>
+
+                <div class="form-group">
+                    <label for="end-location">结束酒店或机场 <span class="required">*</span></label>
+                    <input type="text" id="end-location" placeholder="请输入结束地点">
+                </div>
+
+                <div class="form-group">
+                    <label for="itinerary">游玩行程</label>
+                    <textarea id="itinerary" rows="4" placeholder="请输入游玩行程，每个景点一行"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="remarks">备注 <span class="optional">（选填）</span></label>
+                    <textarea id="remarks" rows="3" placeholder="请输入备注信息"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-model">车辆车型 <span class="required">*</span></label>
+                    <input type="text" id="vehicle-model" placeholder="例如：丰田埃尔法、奔驰V260">
+                </div>
+            </section>
+
+            <section class="config-section">
+                <h2>客户信息</h2>
+
+                <div class="form-group">
+                    <label for="customer-name">客户姓名 <span class="required">*</span></label>
+                    <input type="text" id="customer-name" placeholder="请输入客户姓名">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="passenger-count">出行人数 <span class="required">*</span></label>
+                        <input type="number" id="passenger-count" placeholder="人数" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">联系方式 <span class="required">*</span></label>
+                        <input type="tel" id="contact-phone" placeholder="请输入手机号">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="order-number">行程编号 <span class="required">*</span></label>
+                    <input type="text" id="order-number" placeholder="请输入行程编号">
+                </div>
+            </section>
+
+            <div class="action-buttons">
+                <button id="generate-btn" class="btn btn-primary">生成行程单</button>
+                <button id="reset-btn" class="btn btn-secondary">重置</button>
+            </div>
+
+            <!-- 生成的行程单 -->
+            <section id="result-section" class="result-section" style="display: none;">
+                <div class="result-header">
+                    <h2>生成的行程单</h2>
+                    <button id="copy-btn" class="btn btn-copy">📋 复制行程单</button>
+                </div>
+                <div id="itinerary-result" class="itinerary-result"></div>
+                <div class="result-footer">
+                    <button id="edit-btn" class="btn btn-secondary">返回修改</button>
+                    <button id="copy-btn-bottom" class="btn btn-primary">📋 复制行程单</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p align="center" style="color: #666; font-size: 0.9em;">
+本作品采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="color: #2E86AB; text-decoration: none; font-weight: bold;">CC BY-NC-SA 4.0</a> 许可协议进行许可。
+</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast">已复制到剪贴板！</div>
+
+    <script src="../js/itinerary.js"></script>
+</body>
+</html>
