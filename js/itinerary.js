@@ -8,6 +8,7 @@ let resultSection, itineraryResult, toast;
 let carTypeRadios, travelDate, carTime, luggageCount;
 let startLocation, endLocation, itineraryText, remarks, vehicleModel;
 let customerName, passengerCount, contactPhone, orderNumber;
+let luggageSize, flightNumber, wechat;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -26,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     travelDate = document.getElementById('travel-date');
     carTime = document.getElementById('car-time');
     luggageCount = document.getElementById('luggage-count');
+    luggageSize = document.getElementById('luggage-size');
+    flightNumber = document.getElementById('flight-number');
     startLocation = document.getElementById('start-location');
     endLocation = document.getElementById('end-location');
     itineraryText = document.getElementById('itinerary');
@@ -34,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     customerName = document.getElementById('customer-name');
     passengerCount = document.getElementById('passenger-count');
     contactPhone = document.getElementById('contact-phone');
+    wechat = document.getElementById('wechat');
     orderNumber = document.getElementById('order-number');
 
     // 设置默认日期
@@ -118,6 +122,12 @@ function generateItinerary() {
         orderNumber.focus();
         return;
     }
+    
+    if (!wechat.value.trim()) {
+        showToast('请填写微信账号');
+        wechat.focus();
+        return;
+    }
 
     // 构建行程单内容
     const itineraryContent = generateItineraryContent();
@@ -136,42 +146,86 @@ function generateItinerary() {
 function generateItineraryContent() {
     const carType = getSelectedCarType();
     const date = formatDate(travelDate.value);
-    const time = carTime.value || '待定';
-    const luggage = luggageCount.value ? `${luggageCount.value} 件` : '无';
     
-    // 处理游玩行程：将多行转换为一行，用 -> 分隔
-    let itinerary = itineraryText.value.trim() || '无特殊安排';
-    if (itinerary !== '无特殊安排') {
-        itinerary = itinerary.split('\n')
-            .map(line => line.trim())
-            .filter(line => line.length > 0)
-            .join(' -> ');
+    // 处理行李信息
+    const luggage = luggageCount.value ? `${luggageCount.value} 件` : '';
+    const luggageWithSize = luggageSize.value ? 
+        (luggage ? `${luggage}(${luggageSize.value})` : luggageSize.value) : luggage;
+    
+    // 处理游玩行程
+    let itinerary = itineraryText.value.trim() || '';
+    
+    // 根据不同用车类型生成不同格式
+    switch (carType) {
+        case '包车':
+            return `包车如下： 
+
+用车日期：${date}
+出发地(酒店)：${startLocation.value}
+结束地(酒店)：${endLocation.value}
+行程单 ：${itinerary || ''}
+乘坐人数(小朋友年龄)：${passengerCount.value}
+编号 ：${orderNumber.value}
+备注车型：${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
+            
+        case '接机':
+            return `接机
+用车日期：${date}
+到达机场：济州机场
+目的地(酒店)：${endLocation.value}
+乘坐人数(小朋友年龄)：${passengerCount.value}
+行李数：${luggage || ''}
+接机航班号：${flightNumber.value || ''}
+编号：${orderNumber.value}
+备注车型: ${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
+            
+        case '送机':
+            return `送机
+用车日期：${date}
+见面地(酒店)：${startLocation.value}
+目的地机场：济州机场
+乘坐人数(小朋友年龄)：${passengerCount.value}
+行李数(大小几寸)：${luggageWithSize || ''}
+编号：${orderNumber.value}
+备注车型: ${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
+            
+        case '点对点':
+            return `点对点
+用车日期：${date}
+出发地(酒店)：${startLocation.value}
+到达地(酒店)：${endLocation.value}
+乘坐人数(小朋友年龄)：${passengerCount.value}
+行李数(大小几寸)：${luggageWithSize || ''}
+编号：${orderNumber.value}
+备注车型: ${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
+            
+        default:
+            // 默认使用包车格式
+            return `包车如下： 
+
+用车日期：${date}
+出发地(酒店)：${startLocation.value}
+结束地(酒店)：${endLocation.value}
+行程单 ：${itinerary || ''}
+乘坐人数(小朋友年龄)：${passengerCount.value}
+编号 ：${orderNumber.value}
+备注车型：${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
     }
-    
-    const remarksText = remarks.value.trim();
-    
-    let content = `【行程编号】${orderNumber.value}
-
-用车属性：${carType}
-出行日期：${date}
-用车时间：${time}
-行李数量：${luggage}
-出发地点：${startLocation.value}
-结束地点：${endLocation.value}
-车辆车型：${vehicleModel.value}
-
-客户姓名：${customerName.value}
-出行人数：${passengerCount.value} 人
-联系方式：${contactPhone.value}
-
-游玩行程：${itinerary}`;
-
-    // 如果有备注，添加到最后
-    if (remarksText) {
-        content += `\n备注：${remarksText}`;
-    }
-
-    return content;
 }
 
 // 格式化行程单显示
@@ -252,6 +306,8 @@ function resetForm() {
     // 清空其他字段
     carTime.value = '';
     luggageCount.value = '';
+    luggageSize.value = '';
+    flightNumber.value = '';
     startLocation.value = '';
     endLocation.value = '';
     itineraryText.value = '';
@@ -260,6 +316,7 @@ function resetForm() {
     customerName.value = '';
     passengerCount.value = '';
     contactPhone.value = '';
+    wechat.value = '';
     orderNumber.value = '';
     
     // 隐藏结果
