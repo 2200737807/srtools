@@ -146,6 +146,7 @@ function generateItinerary() {
 function generateItineraryContent() {
     const carType = getSelectedCarType();
     const date = formatDate(travelDate.value);
+    const time = carTime.value ? carTime.value : '待定';
     
     // 处理行李信息
     const luggage = luggageCount.value ? `${luggageCount.value} 件` : '';
@@ -174,6 +175,7 @@ WX：${wechat.value}
         case '接机':
             return `接机
 用车日期：${date}
+用车时间：${time}
 到达机场：济州机场
 目的地(酒店)：${endLocation.value}
 乘坐人数(小朋友年龄)：${passengerCount.value}
@@ -188,6 +190,7 @@ WX：${wechat.value}
         case '送机':
             return `送机
 用车日期：${date}
+用车时间：${time}
 见面地(酒店)：${startLocation.value}
 目的地机场：济州机场
 乘坐人数(小朋友年龄)：${passengerCount.value}
@@ -201,8 +204,23 @@ WX：${wechat.value}
         case '点对点':
             return `点对点
 用车日期：${date}
+用车时间：${time}
 出发地(酒店)：${startLocation.value}
 到达地(酒店)：${endLocation.value}
+乘坐人数(小朋友年龄)：${passengerCount.value}
+行李数(大小几寸)：${luggageWithSize || ''}
+编号：${orderNumber.value}
+备注车型: ${vehicleModel.value}
+乘坐人姓名：${customerName.value}
+WX：${wechat.value}
+乘车人电话：${contactPhone.value}`;
+            
+        case '行李车':
+            return `行李车
+用车日期：${date}
+用车时间：${time}
+出发地(酒店)：${startLocation.value}
+目的地(酒店)：${endLocation.value}
 乘坐人数(小朋友年龄)：${passengerCount.value}
 行李数(大小几寸)：${luggageWithSize || ''}
 编号：${orderNumber.value}
